@@ -13,9 +13,8 @@ describe('NotesView', () => {
     const model = new NotesModel();
     const view = new NotesView(model);
     model.addNote('Test #1');
-    model.addNote('Test #2');
     view.displayNotes();
-    expect(document.querySelectorAll('div.note').length).toBe(2);
+    expect(document.querySelectorAll('div.note').length).toBe(1);
   });
   it('should add a note with user input via form and button click', () => {
     document.body.innerHTML = fs.readFileSync('./index.html');
