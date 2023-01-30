@@ -5,7 +5,17 @@
 const fs = require('fs');
 const NotesModel = require('../src/NotesModel');
 const NotesView = require('../src/NotesView');
-const { hasUncaughtExceptionCaptureCallback } = require('process');
+const NotesClient = require('../src/NotesClient');
+
+jest.mock('../src/NotesClient.js', () => {
+  return jest.fn().mockImplementation(() => {
+    return {
+      loadNotes: (callback) => {
+        callback(['Note 1', 'Note 2']);
+      },
+    };
+  });
+});
 
 describe('NotesView', () => {
   it('should display the notes in the HTML page', () => {
@@ -26,5 +36,18 @@ describe('NotesView', () => {
     submitButton.click();
     expect(document.querySelector('div.note')).not.toBeNull();
     expect(document.querySelector('div.note').textContent).toEqual('Test note');
+  });
+
+  it('should load the notes from an API using the loadFromApi function', () => {
+    const notesModel = {
+      setNotes: jest.fn(),
+      getNotes: jest.fn(() => ['Note 1', 'Note 2']),
+    };
+    const notesClient = new NotesClient();
+    const view = new NotesView(notesModel, notesClient);
+    const spy = jest.spyOn(view, 'displayNotes');
+    view.displayNotesFromApi();
+    expect(notesModel.setNotes).toHaveBeenCalledWith(['Note 1', 'Note 2']);
+    expect(spy).toHaveBeenCalled();
   });
 });
