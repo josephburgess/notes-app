@@ -17,4 +17,15 @@ describe('NotesView', () => {
     view.displayNotes();
     expect(document.querySelectorAll('div.note').length).toBe(2);
   });
+  it('should add a note with user input via form and button click', () => {
+    document.body.innerHTML = fs.readFileSync('./index.html');
+    const model = new NotesModel();
+    const view = new NotesView(model);
+    const input = document.querySelector('#notes-input');
+    input.value = 'Test note';
+    const submitButton = document.querySelector('#add-note-button');
+    submitButton.click();
+    expect(document.querySelector('div.note')).not.toBeNull();
+    expect(document.querySelector('div.note').textContent).toEqual('Test note');
+  });
 });
