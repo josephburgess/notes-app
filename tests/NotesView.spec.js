@@ -18,18 +18,24 @@ jest.mock('../src/NotesClient.js', () => {
 });
 
 describe('NotesView', () => {
-  it('should display the notes in the HTML page', () => {
+  let model, view, client;
+
+  beforeEach(() => {
+    NotesClient.mockClear();
+
     document.body.innerHTML = fs.readFileSync('./index.html');
-    const model = new NotesModel();
-    const view = new NotesView(model);
+
+    client = new NotesClient();
+    model = new NotesModel();
+    view = new NotesView(model, client);
+  });
+
+  it('should display the notes in the HTML page', () => {
     model.addNote('Test #1');
     view.displayNotes();
     expect(document.querySelectorAll('div.note').length).toBe(1);
   });
   it('should add a note with user input via form and button click', () => {
-    document.body.innerHTML = fs.readFileSync('./index.html');
-    const model = new NotesModel();
-    const view = new NotesView(model);
     const input = document.querySelector('#notes-input');
     input.value = 'Test note';
     const submitButton = document.querySelector('#add-note-button');
@@ -38,16 +44,16 @@ describe('NotesView', () => {
     expect(document.querySelector('div.note').textContent).toEqual('Test note');
   });
 
-  it('should load the notes from an API using the loadFromApi function', () => {
-    const notesModel = {
+  it('displays notes from notes server (GET /notes)', () => {
+    const displaySpy = jest.spyOn(view, 'displayNotes');
+    model = {
       setNotes: jest.fn(),
-      getNotes: jest.fn(() => ['Note 1', 'Note 2']),
+      getNotes: jest.fn(() => ['This is a mock note']),
     };
-    const notesClient = new NotesClient();
-    const view = new NotesView(notesModel, notesClient);
-    const spy = jest.spyOn(view, 'displayNotes');
+
     view.displayNotesFromApi();
-    expect(notesModel.setNotes).toHaveBeenCalledWith(['Note 1', 'Note 2']);
-    expect(spy).toHaveBeenCalled();
+
+    expect(model.getNotes()).toEqual(['This is a mock note']);
+    expect(displaySpy).toHaveBeenCalled();
   });
 });
