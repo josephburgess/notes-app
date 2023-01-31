@@ -41,6 +41,13 @@ class NotesView {
     });
   }
 
+  displayError(error) {
+    const errorMessage = document.createElement('h2');
+    errorMessage.className = 'error';
+    errorMessage.textContent = error;
+    this.mainContainer.append(errorMessage);
+  }
+
   #removeNotes() {
     this.mainContainer
       .querySelectorAll('.note')

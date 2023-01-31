@@ -84,4 +84,12 @@ describe(NotesView, () => {
 
     expect(notesClient.createNote).toHaveBeenCalledWith('Note 1');
   });
+
+  it('should display an error', () => {
+    notesView.displayError('Oops! Looks like something went wrong...');
+    const errorElement = document.querySelector('h2.error');
+    expect(errorElement.textContent).toBe(
+      'Oops! Looks like something went wrong...'
+    );
+  });
 });
