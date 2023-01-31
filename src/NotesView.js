@@ -35,10 +35,15 @@ class NotesView {
   }
 
   displayNotesFromApi() {
-    this.notesClient.loadNotes((notes) => {
-      this.notesModel.setNotes(notes);
-      this.displayNotes();
-    });
+    this.notesClient.loadNotes(
+      (notes) => {
+        this.notesModel.setNotes(notes);
+        this.displayNotes();
+      },
+      (error) => {
+        this.displayError('Oops - backend appears to be down!');
+      }
+    );
   }
 
   displayError(error) {
