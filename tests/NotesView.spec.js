@@ -7,53 +7,71 @@ const NotesModel = require('../src/NotesModel');
 const NotesView = require('../src/NotesView');
 const NotesClient = require('../src/NotesClient');
 
-jest.mock('../src/NotesClient.js', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      loadNotes: (callback) => {
-        callback(['Note 1', 'Note 2']);
-      },
-    };
-  });
-});
+jest.mock('../src/NotesClient.js');
 
-describe('NotesView', () => {
-  let model, view, client;
-
+describe(NotesView, () => {
+  let notesModel, notesView, notesClient;
   beforeEach(() => {
     NotesClient.mockClear();
 
     document.body.innerHTML = fs.readFileSync('./index.html');
 
-    client = new NotesClient();
-    model = new NotesModel();
-    view = new NotesView(model, client);
+    notesClient = new NotesClient();
+    notesModel = new NotesModel();
+    notesView = new NotesView(notesModel, notesClient);
   });
 
-  it('should display the notes in the HTML page', () => {
-    model.addNote('Test #1');
-    view.displayNotes();
-    expect(document.querySelectorAll('div.note').length).toBe(1);
+  it('display notes is empty', () => {
+    notesView.displayNotes();
+
+    expect(document.querySelectorAll('.note').length).toBe(0);
   });
-  it('should add a note with user input via form and button click', () => {
-    const input = document.querySelector('#notes-input');
-    input.value = 'Test note';
-    const submitButton = document.querySelector('#add-note-button');
-    submitButton.click();
-    expect(document.querySelector('div.note')).not.toBeNull();
-    expect(document.querySelector('div.note').textContent).toEqual('Test note');
+
+  it('displays two notes', () => {
+    notesModel.addNote('note 1');
+    notesModel.addNote('note 2');
+    notesView.displayNotes();
+
+    expect(document.querySelectorAll('.note').length).toBe(2);
+  });
+
+  it('displayNotes does not add extra notes', () => {
+    notesModel.addNote('Note 1');
+    notesView.displayNotes();
+    expect(document.querySelectorAll('.note').length).toBe(1);
+
+    notesView.displayNotes();
+    expect(document.querySelectorAll('.note').length).toBe(1);
+  });
+
+  it('user inputs two notes with a button', () => {
+    const textInputEl = document.querySelector('#notes-input');
+    const buttonEl = document.querySelector('#add-note-button');
+
+    textInputEl.value = 'Note 1';
+    buttonEl.click();
+    expect(textInputEl.value).toBe('');
+
+    textInputEl.value = 'Note 2';
+    buttonEl.click();
+    expect(textInputEl.value).toBe('');
+
+    const notes = document.querySelectorAll('.note');
+    expect(notes.length).toBe(2);
+    expect(notes[0].textContent).toBe('Note 1');
+    expect(notes[1].textContent).toBe('Note 2');
   });
 
   it('displays notes from notes server (GET /notes)', () => {
-    const displaySpy = jest.spyOn(view, 'displayNotes');
-    model = {
-      setNotes: jest.fn(),
-      getNotes: jest.fn(() => ['This is a mock note']),
-    };
+    const displaySpy = jest.spyOn(notesView, 'displayNotes');
+    notesClient.loadNotes.mockImplementation((callback) => {
+      callback(['This is a mock note']);
+    });
 
-    view.displayNotesFromApi();
+    notesView.displayNotesFromApi();
 
-    expect(model.getNotes()).toEqual(['This is a mock note']);
+    expect(notesClient.loadNotes).toHaveBeenCalled();
+    expect(notesModel.getNotes()).toEqual(['This is a mock note']);
     expect(displaySpy).toHaveBeenCalled();
   });
 });
