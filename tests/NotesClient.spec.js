@@ -17,7 +17,7 @@ describe(NotesClient, () => {
     });
   });
 
-  it('createNote adds a note to the database', () => {
+  it('should adds a note to the database when calling createNote', () => {
     fetch.mockResponseOnce(JSON.stringify('Mock note'));
 
     notesClient.createNote('Mock note');
@@ -47,7 +47,7 @@ describe(NotesClient, () => {
     );
   });
 
-  it('deleteNotes sends DELETE /notes http request', () => {
+  it('should send DELETE request to /notes when calling deleteNotes', () => {
     fetch.mockResponseOnce('');
 
     notesClient.deleteNotes();
