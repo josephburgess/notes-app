@@ -4,15 +4,17 @@ class NotesView {
     this.notesClient = notesClient;
     this.mainContainer = document.querySelector('#main-container');
     this.submitButton = document.querySelector('#add-note-button');
-    this.noteContent = document.querySelector('#notes-input');
+    this.noteForm = document.querySelector('#notes-input');
     this.submitButton.addEventListener('click', this.handleSubmit.bind(this));
-    this.noteContent.addEventListener('keydown', this.handleKeydown.bind(this));
+    this.noteForm.addEventListener('keydown', this.handleKeydown.bind(this));
   }
 
   handleSubmit() {
-    this.notesModel.addNote(this.noteContent.value);
+    let formInput = this.noteForm.value;
+    this.notesModel.addNote(formInput);
+    this.notesClient.createNote(formInput);
     this.displayNotes();
-    this.noteContent.value = '';
+    this.noteForm.value = '';
   }
 
   handleKeydown(event) {

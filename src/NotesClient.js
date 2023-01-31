@@ -17,7 +17,10 @@ class NotesClient {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
       });
   }
 }

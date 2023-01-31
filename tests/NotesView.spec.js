@@ -45,16 +45,16 @@ describe(NotesView, () => {
   });
 
   it('user inputs two notes with a button', () => {
-    const textInputEl = document.querySelector('#notes-input');
-    const buttonEl = document.querySelector('#add-note-button');
+    const textInput = document.querySelector('#notes-input');
+    const button = document.querySelector('#add-note-button');
 
-    textInputEl.value = 'Note 1';
-    buttonEl.click();
-    expect(textInputEl.value).toBe('');
+    textInput.value = 'Note 1';
+    button.click();
+    expect(textInput.value).toBe('');
 
-    textInputEl.value = 'Note 2';
-    buttonEl.click();
-    expect(textInputEl.value).toBe('');
+    textInput.value = 'Note 2';
+    button.click();
+    expect(textInput.value).toBe('');
 
     const notes = document.querySelectorAll('.note');
     expect(notes.length).toBe(2);
@@ -73,5 +73,15 @@ describe(NotesView, () => {
     expect(notesClient.loadNotes).toHaveBeenCalled();
     expect(notesModel.getNotes()).toEqual(['This is a mock note']);
     expect(displaySpy).toHaveBeenCalled();
+  });
+
+  it('creates a note when button is clicked', () => {
+    const textInput = document.querySelector('#notes-input');
+    const button = document.querySelector('#add-note-button');
+
+    textInput.value = 'Note 1';
+    button.click();
+
+    expect(notesClient.createNote).toHaveBeenCalledWith('Note 1');
   });
 });
