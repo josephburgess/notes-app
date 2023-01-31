@@ -4,9 +4,15 @@ class NotesView {
     this.notesClient = notesClient;
     this.mainContainer = document.querySelector('#main-container');
     this.submitButton = document.querySelector('#add-note-button');
+    this.deleteButton = document.querySelector('#delete-notes-button');
     this.noteForm = document.querySelector('#notes-input');
     this.submitButton.addEventListener('click', this.handleSubmit.bind(this));
     this.noteForm.addEventListener('keydown', this.handleKeydown.bind(this));
+    this.deleteButton.addEventListener('click', () => {
+      this.notesClient.deleteNotes((error) => this.displayError(error));
+      this.notesModel.reset();
+      this.displayNotes();
+    });
   }
 
   handleSubmit() {

@@ -82,7 +82,17 @@ describe(NotesView, () => {
     textInput.value = 'Note 1';
     button.click();
 
-    expect(notesClient.createNote).toHaveBeenCalledWith('Note 1');
+    expect(notesClient.createNote).toHaveBeenCalledWith(
+      'Note 1',
+      expect.any(Function)
+    );
+  });
+
+  it('clears the notes when the button is clicked', () => {
+    const button = document.querySelector('#delete-notes-button');
+    button.click();
+
+    expect(notesClient.deleteNotes).toHaveBeenCalled();
   });
 
   it('should display an error', () => {
