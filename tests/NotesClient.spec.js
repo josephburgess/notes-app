@@ -12,4 +12,23 @@ describe('Client class', () => {
       done();
     });
   });
+
+  it('createNote adds a note to the database', () => {
+    const client = new NotesClient();
+
+    fetch.mockResponseOnce(JSON.stringify('Mock note'));
+
+    client.createNote('Mock note');
+
+    expect(fetch).toHaveBeenCalledWith(
+      'http://localhost:3000/notes',
+      expect.objectContaining({
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content: 'Mock note' }),
+      })
+    );
+  });
 });
