@@ -21,13 +21,13 @@ describe(NotesView, () => {
     notesView = new NotesView(notesModel, notesClient);
   });
 
-  it('display notes is empty', () => {
+  it('should display no notes if empty', () => {
     notesView.displayNotes();
 
     expect(document.querySelectorAll('.note').length).toBe(0);
   });
 
-  it('displays two notes', () => {
+  it('should display two notes', () => {
     notesModel.addNote('note 1');
     notesModel.addNote('note 2');
     notesView.displayNotes();
@@ -35,7 +35,7 @@ describe(NotesView, () => {
     expect(document.querySelectorAll('.note').length).toBe(2);
   });
 
-  it('displayNotes does not add extra notes', () => {
+  it('should not add extra notes when calling displayNotes', () => {
     notesModel.addNote('Note 1');
     notesView.displayNotes();
     expect(document.querySelectorAll('.note').length).toBe(1);
@@ -44,7 +44,7 @@ describe(NotesView, () => {
     expect(document.querySelectorAll('.note').length).toBe(1);
   });
 
-  it('user inputs two notes with a button', () => {
+  it('should allow the user to input two notes, with the input field clearing each time', () => {
     const textInput = document.querySelector('#notes-input');
     const button = document.querySelector('#add-note-button');
 
@@ -62,7 +62,7 @@ describe(NotesView, () => {
     expect(notes[1].textContent).toBe('Note 2');
   });
 
-  it('displays notes from notes server (GET /notes)', () => {
+  it('displays notes fetched from notes server (GET /notes)', () => {
     const displaySpy = jest.spyOn(notesView, 'displayNotes');
     notesClient.loadNotes.mockImplementation((callback) => {
       callback(['This is a mock note']);
@@ -75,7 +75,7 @@ describe(NotesView, () => {
     expect(displaySpy).toHaveBeenCalled();
   });
 
-  it('creates a note when button is clicked', () => {
+  it('creates a note when button is clicked and sends a POST request to backend', () => {
     const textInput = document.querySelector('#notes-input');
     const button = document.querySelector('#add-note-button');
 
@@ -88,14 +88,14 @@ describe(NotesView, () => {
     );
   });
 
-  it('clears the notes when the button is clicked', () => {
+  it('deletes the notes when the button is clicked', () => {
     const button = document.querySelector('#delete-notes-button');
     button.click();
 
     expect(notesClient.deleteNotes).toHaveBeenCalled();
   });
 
-  it('should display an error', () => {
+  it('should display an error when displayError is triggered', () => {
     notesView.displayError('Oops! Looks like something went wrong...');
     const errorElement = document.querySelector('h2.error');
     expect(errorElement.textContent).toBe(
