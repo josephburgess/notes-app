@@ -21,7 +21,7 @@ describe(NotesView, () => {
     notesView = new NotesView(notesModel, notesClient);
   });
 
-  const mockEmojifyResponseOnce = (inputText, returnedText) => {
+  const mockEmojifyResponse = (inputText, returnedText) => {
     notesClient.emojifyText.mockImplementationOnce((note, callback) => {
       callback({
         status: 'OK',
@@ -58,8 +58,8 @@ describe(NotesView, () => {
     const textInput = document.querySelector('#notes-input');
     const button = document.querySelector('#add-note-button');
 
-    mockEmojifyResponseOnce('Note 1', 'Note 1');
-    mockEmojifyResponseOnce('Note 2', 'Note 2');
+    mockEmojifyResponse('Note 1', 'Note 1');
+    mockEmojifyResponse('Note 2', 'Note 2');
 
     textInput.value = 'Note 1';
     button.click();
@@ -92,7 +92,7 @@ describe(NotesView, () => {
     const textInput = document.querySelector('#notes-input');
     const button = document.querySelector('#add-note-button');
 
-    mockEmojifyResponseOnce('Note 1', 'Note 1');
+    mockEmojifyResponse('Note 1', 'Note 1');
 
     textInput.value = 'Note 1';
     button.click();
@@ -122,7 +122,7 @@ describe(NotesView, () => {
     const textInput = document.querySelector('#notes-input');
     const button = document.querySelector('#add-note-button');
 
-    mockEmojifyResponseOnce('Fire: :fire:', 'Fire: 🔥');
+    mockEmojifyResponse('Fire: :fire:', 'Fire: 🔥');
 
     textInput.value = 'Fire: :fire:';
     button.click();
