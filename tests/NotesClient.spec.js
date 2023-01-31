@@ -65,4 +65,29 @@ describe(NotesClient, () => {
       done();
     });
   });
+
+  it('should send a fetch request to emojify text', (done) => {
+    fetch.mockResponseOnce(
+      JSON.stringify({
+        status: 'OK',
+        text: 'Fire: :fire:',
+        emojified_text: 'Fire: 🔥',
+      })
+    );
+
+    notesClient.emojifyText('Fire: :fire:', (data) => {
+      expect(data.emojified_text).toEqual('Fire: 🔥');
+      expect(fetch).toHaveBeenCalledWith(
+        'https://makers-emojify.herokuapp.com/',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text: 'Fire: :fire:' }),
+        }
+      );
+      done();
+    });
+  });
 });
