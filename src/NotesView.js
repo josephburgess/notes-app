@@ -17,11 +17,15 @@ class NotesView {
 
   handleSubmit() {
     let formInput = this.noteForm.value;
-    this.notesModel.addNote(formInput);
-    this.notesClient.createNote(formInput, () => {
-      this.displayError('Failed to send to the server!');
+    this.notesClient.emojifyText(formInput, (data) => {
+      let emojifiedText = data.emojified_text;
+      this.notesModel.addNote(emojifiedText);
+      this.displayNotes();
+      this.notesClient.createNote(emojifiedText, () => {
+        this.displayError('Failed to send to the server!');
+      });
     });
-    this.displayNotes();
+
     this.noteForm.value = '';
   }
 

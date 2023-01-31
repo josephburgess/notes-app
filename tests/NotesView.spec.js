@@ -21,6 +21,16 @@ describe(NotesView, () => {
     notesView = new NotesView(notesModel, notesClient);
   });
 
+  const mockEmojifyResponseOnce = (inputText, returnedText) => {
+    notesClient.emojifyText.mockImplementationOnce((note, callback) => {
+      callback({
+        status: 'OK',
+        text: inputText,
+        emojified_text: returnedText,
+      });
+    });
+  };
+
   it('should display no notes if empty', () => {
     notesView.displayNotes();
 
@@ -47,6 +57,9 @@ describe(NotesView, () => {
   it('should allow the user to input two notes, with the input field clearing each time', () => {
     const textInput = document.querySelector('#notes-input');
     const button = document.querySelector('#add-note-button');
+
+    mockEmojifyResponseOnce('Note 1', 'Note 1');
+    mockEmojifyResponseOnce('Note 2', 'Note 2');
 
     textInput.value = 'Note 1';
     button.click();
@@ -79,6 +92,8 @@ describe(NotesView, () => {
     const textInput = document.querySelector('#notes-input');
     const button = document.querySelector('#add-note-button');
 
+    mockEmojifyResponseOnce('Note 1', 'Note 1');
+
     textInput.value = 'Note 1';
     button.click();
 
@@ -100,6 +115,22 @@ describe(NotesView, () => {
     const errorElement = document.querySelector('h2.error');
     expect(errorElement.textContent).toBe(
       'Oops! Looks like something went wrong...'
+    );
+  });
+
+  it('displays emojified text if the text has tags', () => {
+    const textInput = document.querySelector('#notes-input');
+    const button = document.querySelector('#add-note-button');
+
+    mockEmojifyResponseOnce('Fire: :fire:', 'Fire: 🔥');
+
+    textInput.value = 'Fire: :fire:';
+    button.click();
+
+    expect(document.querySelector('.note').textContent).toBe('Fire: 🔥');
+    expect(notesClient.emojifyText).toHaveBeenCalledWith(
+      'Fire: :fire:',
+      expect.any(Function)
     );
   });
 });

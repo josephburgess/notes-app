@@ -27,6 +27,18 @@ class NotesClient {
       });
   }
 
+  emojifyText(text, callback) {
+    fetch('https://makers-emojify.herokuapp.com/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text: text }),
+    })
+      .then((response) => response.json())
+      .then((data) => callback(data));
+  }
+
   deleteNotes(errorCallback) {
     fetch('http://localhost:3000/notes', { method: 'DELETE' }).catch(
       (error) => {
