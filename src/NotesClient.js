@@ -10,7 +10,7 @@ class NotesClient {
       });
   }
 
-  createNote(note) {
+  createNote(note, errorCallback) {
     fetch('http://localhost:3000/notes', {
       method: 'POST',
       headers: {
@@ -23,7 +23,7 @@ class NotesClient {
         console.log('Success:', data);
       })
       .catch((error) => {
-        console.error('Error:', error);
+        errorCallback(error);
       });
   }
 }

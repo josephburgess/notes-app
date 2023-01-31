@@ -12,7 +12,9 @@ class NotesView {
   handleSubmit() {
     let formInput = this.noteForm.value;
     this.notesModel.addNote(formInput);
-    this.notesClient.createNote(formInput);
+    this.notesClient.createNote(formInput, () => {
+      this.displayError('Failed to send to the server!');
+    });
     this.displayNotes();
     this.noteForm.value = '';
   }
@@ -40,7 +42,7 @@ class NotesView {
         this.notesModel.setNotes(notes);
         this.displayNotes();
       },
-      (error) => {
+      () => {
         this.displayError('Oops - backend appears to be down!');
       }
     );
