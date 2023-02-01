@@ -11,8 +11,8 @@ describe(NotesClient, () => {
   it('calls fetch and loads data', (done) => {
     fetch.mockResponseOnce(JSON.stringify(['a test note']));
 
-    notesClient.loadNotes((returnedDataFromApi) => {
-      expect(returnedDataFromApi[0]).toBe('a test note');
+    notesClient.loadNotes((data) => {
+      expect(data[0]).toBe('a test note');
       done();
     });
   });
